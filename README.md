@@ -32,7 +32,7 @@ GarminDb releases are hosted on [PyPI](https://pypi.org/project/garmindb/). Garm
 * Copy `GarminConnectConfig.json.example` to `~/.GarminDb/GarminConnectConfig.json`, edit it, and add your Garmin Connect username and password and adjust the start dates to match the dats of your data in Garmin Connect.
 * Starting out: download all of your data and create your db by running `garmindb_cli.py --all --download --import --analyze` in a terminal.
 * Incrementally update your db by downloading the latest data and importing it by running `garmindb_cli.py --all --download --import --analyze --latest` in a terminal.
-* Ocassionally run `garmin_cli.py --backup` to backup your DB files.
+* Ocassionally run `garmindb_cli.py --backup` to backup your DB files.
 
 Update to the latest release with `pip install --upgrade garmindb`.
 
@@ -70,7 +70,7 @@ Find out who's using GarminDb on what platforms, OSes, and python versions [here
 # Bugs and Debugging
 
 * If you have issues, file a bug here on the project. See the Issues tab at the top of the project page. Run `make bugreport` or `garmindb_bug_report.py` and include bugreport.txt in your bug report.
-* Besides errors that appear on the screen, one of the first places to look for more information is the log files (garmin.log, graphs.log).
+* Besides errors that appear on the screen, one of the first places to look for more information is the log files (garmindb.log).
 * If your having issues with a particular data files, please considering sharing so I can debug it and add support.
 
 # Contributing
