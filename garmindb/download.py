@@ -21,6 +21,7 @@ import fitfile.conversions as conversions
 
 from .garmin_connect_config_manager import GarminConnectConfigManager
 from .config_manager import ConfigManager
+from garmindb import encryption
 
 
 logger = logging.getLogger(__file__)
@@ -95,6 +96,10 @@ class Download():
             self.__login()
 
         profile_dir = ConfigManager.get_or_create_fit_files_dir()
+        logger.info('generating encryption key')
+        # key = encryption.generate_key()
+        # self.encrypt_and_save_json_to_file(f'{profile_dir}/social-profile', self.garth.profile,key)
+        # logger.info('saved encrypted data encryption key')
         self.save_json_to_file(f'{profile_dir}/social-profile', self.garth.profile)
         self.save_json_to_file(f'{profile_dir}/user-settings', self.garth.connectapi(f'{self.garmin_connect_user_profile_url}/user-settings'), True)
         self.save_json_to_file(f'{profile_dir}/personal-information', self.garth.connectapi(f'{self.garmin_connect_user_profile_url}/personal-information'), True)
@@ -131,6 +136,15 @@ class Download():
             with open(full_filename, 'w') as file:
                 file.write(json.dumps(json_data, default=cls.__convert_to_json))
 
+    @classmethod
+    def encrypt_and_save_json_to_file(cls, filename, json_data,key, overwite=False):
+        """Save JSON formatted data to a file."""
+        full_filename = f'{filename}.json'
+        exists = os.path.isfile(full_filename)
+        if not exists or overwite:
+            logger.info("%s %s", 'Overwriting' if exists else 'Saving', full_filename)
+            encryption.save_encrypted_json(json_data,full_filename,key)
+
     def save_binary_file(self, filename, url, overwite=False):
         """Save binary data to a file."""
         exists = os.path.isfile(filename)
@@ -158,7 +172,9 @@ class Download():
             '_': str(conversions.dt_to_epoch_ms(conversions.date_to_dt(date)))
         }
         url = f'{self.garmin_connect_daily_summary_url}/{self.display_name}'
+        root_logger.info(url)
         json_filename = f'{directory_func(date.year)}/daily_summary_{date_str}'
+        root_logger.info(json_filename)
         try:
             self.save_json_to_file(json_filename, self.garth.connectapi(url, params=params), overwite)
         except GarthHTTPError as e:
